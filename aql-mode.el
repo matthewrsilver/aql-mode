@@ -1,12 +1,12 @@
 ;;; aql-mode.el --- major mode for Arango Query Language (AQL) syntax highlighting
 
-;; Copyright (C) 2016, by Matthew Silver
+;; Copyright (C) 2016, by Matthew R. Silver
 
 ;; Author: Matthew Silver (msilver@vectranetworks.com)
 ;; Version: 0.1
 ;; Created: July 26, 2016
 
-;;; License: None? Do anything you want with this.
+;;; License: MIT License -- see LICENSE.txt
 
 ;; TODO:
 ;;   - line indentation (indent after for, "{", and "(" )
