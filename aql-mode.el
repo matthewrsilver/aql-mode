@@ -8,10 +8,11 @@
 
 ;;; License: None? Do anything you want with this.
 
-;; based off of http://www.ergoemacs.org/emacs/elisp_syntax_coloring.html
 ;; TODO:
-;;   - comments
-;;   - line indentation
+;;   - line indentation (indent after for, "{", and "(" )
+;;   - built-in functions?
+;;   - namespaces?
+;;   - boundary handling in numeric literals is imperfect
 
 
 ;; define keyword categories
@@ -32,22 +33,28 @@
 ;; generate regex strings for each category
 (setq aql-keywords-regexp (regexp-opt aql-keywords 'words))
 (setq aql-constants-regexp (regexp-opt aql-constants 'words))
+(setq aql-numeric-regexp "\\_<[0-9]*\\.?[0-9]*\\_>")
+(setq aql-bindvar-regexp "@[a-zA-z_]*")
 
 ;; associate categories with faces
 (setq aql-font-lock-keywords
       `(
         (,aql-keywords-regexp . font-lock-keyword-face)
         (,aql-constants-regexp . font-lock-constant-face)
+        (,aql-numeric-regexp . font-lock-warning-face)
+        (,aql-bindvar-regexp . font-lock-variable-name-face)
         ))
 
-(define-derived-mode aql-mode fundamental-mode
+(define-derived-mode aql-mode c-mode
   "AQL Mode"
   "Major mode for editing Arango Query Language (AQL)"
 
   (setq font-lock-defaults '((aql-font-lock-keywords)))
   (set (make-local-variable 'font-lock-defaults)
+
+       ;; user may define aql-font-lock-keywords to override
        '(aql-font-lock-keywords nil t))
-       ;; user may define aql-font-lock-keywords
+
   )
 
 ;; clear memory
@@ -55,6 +62,11 @@
 (setq aql-keywords-regexp nil)
 (setq aql-constants nil)
 (setq aql-constants-regexp nil)
+(setq aql-numeric-regexp nil)
+(setq aql-bindvar-regexp nil)
 
 ;; add the mode to the features list
 (provide 'aql-mode)
+
+;; associate this mode with .aql files
+(add-to-list 'auto-mode-alist '("\\.aql$" . aql-mode))
