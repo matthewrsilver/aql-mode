@@ -12,8 +12,6 @@
 ;;   - line indentation (indent after for, "{", and "(" )
 ;;   - built-in functions?
 ;;   - namespaces?
-;;   - boundary handling in numeric literals is imperfect
-
 
 ;; define keyword categories
 (setq aql-keywords
@@ -33,7 +31,7 @@
 ;; generate regex strings for each category
 (setq aql-keywords-regexp (regexp-opt aql-keywords 'words))
 (setq aql-constants-regexp (regexp-opt aql-constants 'words))
-(setq aql-numeric-regexp "\\_<[0-9]*\\.?[0-9]*\\_>")
+(setq aql-numeric-regexp "[-+]?\\.?\\_<[0-9]*\\.?[0-9]+\\.?\\(?:[eE][-+]?[0-9]+\\)?\\_>\\.?")
 (setq aql-bindvar-regexp "@[a-zA-z_]*")
 
 ;; associate categories with faces
@@ -51,10 +49,7 @@
 
   (setq font-lock-defaults '((aql-font-lock-keywords)))
   (set (make-local-variable 'font-lock-defaults)
-
-       ;; user may define aql-font-lock-keywords to override
        '(aql-font-lock-keywords nil t))
-
   )
 
 ;; clear memory
