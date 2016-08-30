@@ -41,26 +41,23 @@
 
 (setq default-tab-width 4)
 
-;; Indent the current line
 (defun aql-indent-line ()
   "Indent current line as AQL code"
   (interactive)
   (beginning-of-line)
 
-  ;; if the point is at the beginning of the buffer indent line to column 0
+  ;; If the point is at the beginning of the buffer indent line to column 0
   (if (bobp)
     (indent-line-to 0)
 
-    ;; else, define some variables that will be useful as we investigate further
-    (let ( (not-indented t) (cur-indent nil) )
+    (let ( (need-line t) (cur-indent nil) )
 
-      ;; if the  current line is  only a  close brace then  we can indent  it by
+      ;; if the  current line is only  a close brace,  then we can indent  it by
       ;; subtracting the tab-width from the indent of the previous line
       (if (looking-at "^[ \t]*[)}]")
 
-          (progn ;; evaluate the following commands in sequence...
+          (progn
 
-            ;; set cur-indent to the indent of the previous line minus tab-width
             (save-excursion
               (forward-line -1)
               (setq cur-indent (- (current-indentation) default-tab-width))
@@ -69,47 +66,61 @@
             ;; rectify cur-indent
             (if (< cur-indent 0) (setq cur-indent 0) )
 
-            ) ;; end progn
+            )
 
-        ;; else (i.e. if  the current line is  not a close brace)  we'll need to
-        ;; walk through the  previous lines, searching for  information that can
-        ;; tell us what the indentation for the current line should be.
+        ;; else (i.e. if the current line is not solely a close brace) move back
+        ;; through the  previous lines  until a  non-empty, non-comment  line is
+        ;; found, and base the current line's indentation on it
         (save-excursion
 
-          ;; while we have not yet indented the current line
-          (while not-indented
+          (while need-line
 
-            ;; move to the previous line
             (forward-line -1)
 
-            ;; if the line is a close brace, then we know that the current line
-            ;; should be indented to match.
-            (if (looking-at "^[ \t]*[)}]")
+            ;; if the line is a block-initiating line  -- e.g. it is a for loop,
+            ;; or an open brace -- then  the current line should be indented one
+            ;; tab-width forward
+            (if (looking-at "^[ \t]*\\(FOR\\|for\\|.*[({]$\\)")
                 (progn
-                  (setq cur-indent (current-indentation))
-                  (setq not-indented nil))
+                  (setq cur-indent (+ (current-indentation) default-tab-width))
+                  (setq need-line nil)
+                  )
 
-              ;; else if the line is a block-initiating line -- e.g. it is a for
-              ;; loop, or an open brace (TODO buggy) set the current line should
-              ;; be indented one tab-width forward
-              (if (looking-at "^[ \t]*\\(FOR\\|for\\|.*[({]$\\)")
-                  (progn
-                    (setq cur-indent (+ (current-indentation) default-tab-width))
-                    (setq not-indented nil))
+              ;; else if the line is totally empty, do nothing
+              (if (looking-at "^[\s]*$")
+                  (setq need-line t)
 
-                ;; else if we've reached the beginning of the buffer (base case),
-                ;; then we don't indent the line at all.
-                (if (bobp)
-                    (setq not-indented nil))))))
+                ;; else if the line is a comment, do nothing
+                (if (nth 4 (syntax-ppss))
+                    (setq need-line t)
 
-        ) ;; end initial line check
+                  ;; else if this is the first line then just exit the loop
+                  (if (bobp)
+                      (setq need-line nil)
 
-      ;; now apply the indentation
+                    ;; finally, there  must be text  on this line...  indent the
+                    ;; current line to match it!
+                    (progn
+                      (setq cur-indent (current-indentation))
+                      (setq need-line nil)
+                      )))))
+
+            ) ;; while need-line
+
+          );; save-excursion
+
+        )
+
+      ;; once the search  for an informative line has been  completed, we'll use
+      ;; the value of cur-indent to actually indent the line
       (if cur-indent
           (indent-line-to cur-indent)
         (indent-line-to 0))
 
-      )))
+      ) ;; let
+
+    )
+  )
 
 
 
