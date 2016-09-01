@@ -11,10 +11,7 @@
 ;; TODO:
 ;;   - bind variable: @ can only be at the beginning
 ;;   - namespaces?
-;;   - deal with electric indent business. after typing two slashes
-;;     in a comment, the cursor is moved to the beginning of the line....
-;;   - toggle highlighting of builtins? It's kind of ugly.
-;;      - also what about the braces associated with builtins?
+
 
 ;; Hook for user to perform tasks at the time this mode is loaded
 (defvar aql-mode-hook nil)
@@ -25,6 +22,10 @@
 
     ;; this is the default binding, just here as an example
     (define-key map "\C-j" 'newline-and-indent)
+
+    ;; disable automatic indentation and movement of cursor on comments
+    (define-key map "/" 'self-insert-command)
+    (define-key map "*" 'self-insert-command)
 
     map)
 
