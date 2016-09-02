@@ -1,9 +1,8 @@
 # aql-mode
 
-A simple syntax highlighting mode for Arango Query Language (AQL), the language used for querying [ArangoDB](http://www.arangodb.com)
+A simple syntax highlighting and indentation mode for Arango Query Language (AQL), the language used for querying [ArangoDB](http://www.arangodb.com)
 
-There's currently no support for any reasonable indentation functionality. For now, use spaces and try not to hit the tab key.
-
+Current indentation support is somewhat limited, but should satisfy most simple cases.
 
 Installation
 ------------

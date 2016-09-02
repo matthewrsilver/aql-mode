@@ -1,16 +1,15 @@
-;;; aql-mode.el --- major mode for Arango Query Language (AQL) syntax highlighting
+;;; aql-mode.el --- major mode for Arango Query Language (AQL) syntax highlighting and indentation
 
 ;; Copyright (C) 2016, by Matthew R. Silver
 
 ;; Author: Matthew Silver (msilver@vectranetworks.com)
-;; Version: 0.1
+;; Version: 0.2
 ;; Created: July 26, 2016
 
 ;;; License: MIT License -- see LICENSE.txt
 
 ;; TODO:
-;;   - bind variable: @ can only be at the beginning
-;;   - namespaces?
+;;   - namespaces
 
 
 ;; Hook for user to perform tasks at the time this mode is loaded
@@ -200,7 +199,7 @@
 (setq aql-constants-regexp (regexp-opt aql-constants 'words))
 (setq aql-builtins-regexp (regexp-opt aql-builtins 'words))
 (setq aql-numeric-regexp "[-+]?\\.?\\_<[0-9]*\\.?[0-9]+\\.?\\(?:[eE][-+]?[0-9]+\\)?\\_>\\.?")
-(setq aql-bindvar-regexp "@@?[a-zA-z_]+")
+(setq aql-bindvar-regexp "\\(^\\|[ \t]\\)@@?[a-zA-z_]+")
 
 ;; Associate categories with faces
 (setq aql-font-lock-keywords
