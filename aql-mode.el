@@ -8,10 +8,6 @@
 
 ;;; License: MIT License -- see LICENSE.txt
 
-;; TODO:
-;;   - namespaces
-
-
 ;; Hook for user to perform tasks at the time this mode is loaded
 (defvar aql-mode-hook nil)
 
@@ -25,6 +21,7 @@
     ;; disable automatic indentation and movement of cursor on comments
     (define-key map "/" 'self-insert-command)
     (define-key map "*" 'self-insert-command)
+    (define-key map ":" 'self-insert-command)
 
     map)
 
@@ -200,6 +197,7 @@
 (setq aql-builtins-regexp (regexp-opt aql-builtins 'words))
 (setq aql-numeric-regexp "[-+]?\\.?\\_<[0-9]*\\.?[0-9]+\\.?\\(?:[eE][-+]?[0-9]+\\)?\\_>\\.?")
 (setq aql-bindvar-regexp "\\(^\\|[ \t]\\)@@?[a-zA-z_]+")
+(setq aql-namespace-regexp "\\([a-zA-Z]+\\)\\(::\\)")
 
 ;; Associate categories with faces
 (setq aql-font-lock-keywords
@@ -209,6 +207,9 @@
         (,aql-builtins-regexp . font-lock-builtin-face)
         (,aql-numeric-regexp . font-lock-warning-face)
         (,aql-bindvar-regexp . font-lock-variable-name-face)
+
+        ;; use "1" instead of "." to match only the text, not the "::"
+        (,aql-namespace-regexp 1 font-lock-constant-face)
         ))
 
 (define-derived-mode aql-mode c-mode
@@ -229,6 +230,7 @@
 (setq aql-builtins-regexp nil)
 (setq aql-numeric-regexp nil)
 (setq aql-bindvar-regexp nil)
+(setq aql-namespace-regexp nil)
 
 ;; add the mode to the features list
 (provide 'aql-mode)
