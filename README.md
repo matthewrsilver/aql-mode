@@ -25,8 +25,17 @@ By default, `aql-mode` will be loaded and applied for files that end with the ".
 M-x aql-mode
 ```
 
-to automatically use aql mode for some other extension (say ".arango") update your `~/.emacs` file with:
+to automatically use aql mode for some other extension (say ".arango") update `~/.emacs` with:
 
 ```
 (add-to-list 'auto-mode-alist '("\\.arango$" . aql-mode))
+```
+
+Configuration
+-------------
+
+The tab width is currently set to `default-tab-width`, but can be configured by adding the following line to `~/.emacs`:
+
+```
+(setq aql-tab-width 4) ;; change 4 to whatever you'd like
 ```

@@ -36,7 +36,7 @@
 ;; The indentation component consists of  a single function aql-indent-line that
 ;; is called whenever emacs needs to determine how to indent a line.
 
-(setq default-tab-width 4)
+(defvar aql-tab-width default-tab-width)
 
 (defun aql-indent-line ()
   "Indent current line as AQL code"
@@ -57,7 +57,7 @@
 
             (save-excursion
               (forward-line -1)
-              (setq cur-indent (- (current-indentation) default-tab-width))
+              (setq cur-indent (- (current-indentation) aql-tab-width))
               )
 
             ;; rectify cur-indent
@@ -79,7 +79,7 @@
             ;; tab-width forward
             (if (looking-at "^[ \t]*\\(FOR\\|for\\|.*[({]$\\)")
                 (progn
-                  (setq cur-indent (+ (current-indentation) default-tab-width))
+                  (setq cur-indent (+ (current-indentation) aql-tab-width))
                   (setq need-line nil)
                   )
 
@@ -130,7 +130,7 @@
 (setq aql-keywords
       '("AGGREGATE"        "ALL"              "AND"              "ANY"
         "ASC"              "COLLECT"          "DESC"             "DISTINCT"
-        "FILTER"           "for"              "GRAPH"            "IN"
+        "FILTER"           "FOR"              "GRAPH"            "IN"
         "INBOUND"          "INSERT"           "INTO"             "LET"
         "LIMIT"            "NOT"              "OR"               "OUTBOUND"
         "REMOVE"           "REPLACE"          "RETURN"           "SHORTEST_PATH"
@@ -197,7 +197,7 @@
 (setq aql-builtins-regexp (regexp-opt aql-builtins 'words))
 (setq aql-numeric-regexp "[-+]?\\.?\\_<[0-9]*\\.?[0-9]+\\.?\\(?:[eE][-+]?[0-9]+\\)?\\_>\\.?")
 (setq aql-bindvar-regexp "\\(^\\|[ \t]\\)@@?[a-zA-z_]+")
-(setq aql-namespace-regexp "\\([a-zA-Z]+\\)\\(::\\)")
+(setq aql-namespace-regexp "\\([_a-zA-Z]+\\)::")
 
 ;; Associate categories with faces
 (setq aql-font-lock-keywords
@@ -216,7 +216,6 @@
   "AQL Mode"
   "Major mode for editing Arango Query Language (AQL)"
 
-  (setq font-lock-defaults '((aql-font-lock-keywords)))
   (set (make-local-variable 'font-lock-defaults) '(aql-font-lock-keywords nil t))
   (set (make-local-variable 'indent-line-function) 'aql-indent-line)
   )
